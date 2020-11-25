@@ -9,5 +9,5 @@ fun main() {
         val rck = Racket(RACKET_X, RACKET_Y)
         arena.drawRacket(rck)
     }
-    onFinish { println("bye")}
+    onFinish { }
 }
