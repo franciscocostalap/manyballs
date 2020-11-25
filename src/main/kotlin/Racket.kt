@@ -1,6 +1,12 @@
 import pt.isel.canvas.Canvas
 import pt.isel.canvas.WHITE
 
+/**
+ * Racket's information.
+ *
+ * [x]: horizontal position
+ * [y]: vertical position
+ */
 data class Racket(val x:Int, val y:Int)
 
 /**
@@ -27,14 +33,15 @@ const val MEDIUM_WIDTH = 15
 const val MEDIUM_COLOR = 0xFF6666
 
 /**
- * Racket starting x.
+ * Racket starting horizontal position.
  */
 const val RACKET_X = 155
 /**
- * Racket y.
+ * Racket vertical position.
  */
 const val RACKET_Y = 550
 
+//TODO: Comentar funçao drawRacket
 fun Canvas.drawRacket(rket:Racket) {
     fun drawCorners(rket: Racket) {
         drawRect(rket.x , RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
@@ -48,5 +55,4 @@ fun Canvas.drawRacket(rket:Racket) {
     drawRect(rket.x, rket.y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
     drawCorners(rket)
     drawEdges(rket)
-
 }
