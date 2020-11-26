@@ -54,7 +54,7 @@ fun Canvas.drawRacket(rket:Racket) {
      *
      * Only usable inside drawRacket().
      *
-     * @param rket Racket where the corners are drawn.
+     * @param rket Racket where the corner rectangles are drawn.
      *
      */
     fun drawCorners(rket: Racket) {
