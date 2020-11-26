@@ -41,17 +41,39 @@ const val RACKET_X = 155
  */
 const val RACKET_Y = 550
 
-//TODO: Comentar funçao drawRacket
+/**
+ * Draws the racket.
+ *
+ * @receiver where it draws
+ *
+ * @param rket Racket to draw
+ */
 fun Canvas.drawRacket(rket:Racket) {
+    /**
+     * Draws the corner rectangles of the racket.
+     *
+     * Only usable inside drawRacket().
+     *
+     * @param rket Racket where the corners are drawn.
+     *
+     */
     fun drawCorners(rket: Racket) {
         drawRect(rket.x , RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
         drawRect(rket.x + (RACKET_WIDTH - CORNER_WIDTH), RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
     }
+    /**
+     * Draws the intermediate rectangles of the racket.
+     *
+     * Only usable inside drawRacket().
+     *
+     * @param rket Racket where the intermediate rectangles are drawn.
+     */
     fun drawEdges(rket: Racket){
         drawRect(rket.x + CORNER_WIDTH, rket.y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
         drawRect(rket.x + RACKET_WIDTH - CORNER_WIDTH - MEDIUM_WIDTH, rket.y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
 
     }
+
     drawRect(rket.x, rket.y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
     drawCorners(rket)
     drawEdges(rket)

@@ -6,8 +6,13 @@ import pt.isel.canvas.*
 fun main() {
     onStart{
         val arena = Canvas(400, 600, BLACK)
-        val rck = Racket(RACKET_X, RACKET_Y)
+        var rck = Racket(RACKET_X, RACKET_Y)
         arena.drawRacket(rck)
+        arena.onMouseMove { me ->
+            rck = Racket(me.x,RACKET_Y)
+            arena.erase()
+            arena.drawRacket(rck)
+        }
     }
     onFinish {}
 }
