@@ -1,5 +1,8 @@
 import pt.isel.canvas.*
 
+
+data class Ball(val x:Int, val y:Int, val dx:Int, val dy:Int)
+
 /**
  * Program entry point for a version of MultiBall
  */
