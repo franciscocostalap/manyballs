@@ -5,9 +5,8 @@ import pt.isel.canvas.WHITE
  * Racket's information.
  *
  * [x]: horizontal position
- * [y]: vertical position
  */
-data class Racket(val x:Int, val y:Int)
+data class Racket(val x:Int)
 
 /**
  * Main rectangle width.
@@ -69,12 +68,12 @@ fun Canvas.drawRacket(rket:Racket) {
      * @param rket Racket where the intermediate rectangles are drawn.
      */
     fun drawEdges(rket: Racket){
-        drawRect(rket.x + CORNER_WIDTH, rket.y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
-        drawRect(rket.x + RACKET_WIDTH - CORNER_WIDTH - MEDIUM_WIDTH, rket.y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
+        drawRect(rket.x + CORNER_WIDTH, RACKET_Y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
+        drawRect(rket.x + RACKET_WIDTH - CORNER_WIDTH - MEDIUM_WIDTH, RACKET_Y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
 
     }
 
-    drawRect(rket.x, rket.y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
+    drawRect(rket.x, RACKET_Y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
     drawCorners(rket)
     drawEdges(rket)
 }
