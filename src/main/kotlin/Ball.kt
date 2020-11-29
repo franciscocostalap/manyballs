@@ -29,6 +29,11 @@ const val DELTAY = -4
  */
 val DELTAX = (-6..6).random()
 
+val ARENA_X = 0..400
+
+val ARENA_Y = 0..600
+
+
 /**
  * Draws a ball.
  *
@@ -38,4 +43,14 @@ val DELTAX = (-6..6).random()
  */
 fun Canvas.drawBall(b:Ball){
     drawCircle(b.x, b.y, RADIUS, CYAN)
+}
+
+fun Ball.move():Ball{
+    val newX = x + dx
+    val newY = y + dy
+    return when {
+        newX > ARENA_X.last - RADIUS || newX < ARENA_X.first + RADIUS -> Ball(x, newY, -dx, dy)
+        newY > ARENA_Y.last - RADIUS || newY < ARENA_Y.first + RADIUS -> Ball(newX, y, dx, -dy)
+        else                                                          -> Ball(newX, newY, dx, dy)
+    }
 }
