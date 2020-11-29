@@ -29,7 +29,13 @@ const val DELTAY = -4
  */
 val DELTAX = (-6..6).random()
 
-
+/**
+ * Draws a ball.
+ *
+ * @receiver where it draws.
+ *
+ * @param b Ball to draw.
+ */
 fun Canvas.drawBall(b:Ball){
     drawCircle(b.x, b.y, RADIUS, CYAN)
 }

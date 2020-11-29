@@ -4,7 +4,7 @@ import pt.isel.canvas.WHITE
 /**
  * Racket's information.
  *
- * [x]: horizontal position
+ * @property x horizontal position
  */
 data class Racket(val x:Int)
 
@@ -28,8 +28,8 @@ const val CORNER_COLOR = 0xFF3333
 /**
  * Intermediate rectangle width and color.
  */
-const val MEDIUM_WIDTH = 15
-const val MEDIUM_COLOR = 0xFF6666
+const val INTERMEDIATE_WIDTH = 15
+const val INTERMEDIATE_COLOR = 0xFF6666
 
 /**
  * Racket starting horizontal position.
@@ -52,28 +52,30 @@ fun Canvas.drawRacket(rket:Racket) {
      * Draws the corner rectangles of the racket.
      *
      * Only usable inside drawRacket().
-     *
-     * @param rket Racket where the corner rectangles are drawn.
-     *
      */
-    fun drawCorners(rket: Racket) {
+    fun drawCorners() {
         drawRect(rket.x , RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
-        drawRect(rket.x + (RACKET_WIDTH - CORNER_WIDTH), RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
+        drawRect(rket.x + (RACKET_WIDTH - CORNER_WIDTH)
+                , RACKET_Y
+                , CORNER_WIDTH
+                , RACKET_HEIGHT / 2
+                , CORNER_COLOR)
     }
     /**
      * Draws the intermediate rectangles of the racket.
      *
      * Only usable inside drawRacket().
-     *
-     * @param rket Racket where the intermediate rectangles are drawn.
      */
-    fun drawEdges(rket: Racket){
-        drawRect(rket.x + CORNER_WIDTH, RACKET_Y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
-        drawRect(rket.x + RACKET_WIDTH - CORNER_WIDTH - MEDIUM_WIDTH, RACKET_Y, MEDIUM_WIDTH, RACKET_HEIGHT / 2, MEDIUM_COLOR)
-
+    fun drawIntermediate(){
+        drawRect(rket.x + CORNER_WIDTH, RACKET_Y, INTERMEDIATE_WIDTH, RACKET_HEIGHT / 2, INTERMEDIATE_COLOR)
+        drawRect(rket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH
+                , RACKET_Y
+                , INTERMEDIATE_WIDTH
+                , RACKET_HEIGHT / 2
+                , INTERMEDIATE_COLOR)
     }
 
     drawRect(rket.x, RACKET_Y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
-    drawCorners(rket)
-    drawEdges(rket)
+    drawCorners()
+    drawIntermediate()
 }
