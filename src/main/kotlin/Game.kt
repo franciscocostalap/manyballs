@@ -8,11 +8,15 @@ import pt.isel.canvas.WHITE
  *
  * @property racket Game's racket.
  */
-data class Game(val balls:List<Ball>, val racket: Racket)
+data class Game(val area:Area, val balls:List<Ball>, val racket: Racket)
+
+
+const val WIDTH = 400
+const val HEIGHT = 600
 
 fun Canvas.drawGame(g:Game){
     erase()
-    drawText(ARENA_X.last/2, ARENA_Y.last, g.balls.size.toString(), WHITE, 30)
+    drawText(g.area.width/2, g.area.height, g.balls.size.toString(), WHITE, 30)
     g.balls.forEach {drawBall(it)}
     drawRacket(g.racket)
 
@@ -25,9 +29,9 @@ fun Canvas.drawGame(g:Game){
  *
  * @return Games's list of balls with one more ball.
  */
-fun Game.newBall() = Game(this.balls + Ball(ARENA_X.last/2, ARENA_Y.last - RADIUS, DELTAX.random(), DELTAY), racket)
+fun Game.newBall() = Game(this.area,this.balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
 
 fun Game.moveBalls():List<Ball>{
-    val filteredBalls = balls.filter {it.y in ARENA_Y + 2*RADIUS}
-    return if (balls.any {it.y !in ARENA_Y + 2*RADIUS})filteredBalls else balls.map {it.move(this)}
+    val filteredBalls = balls.filter {it.y in 0..(this.area.height + 2*RADIUS)}
+    return if (balls.any {it.y !in 0..area.height + 2*RADIUS})filteredBalls else balls.map {it.move(this)}
 }

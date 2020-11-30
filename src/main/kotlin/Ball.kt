@@ -44,10 +44,10 @@ fun Ball.move(game:Game):Ball{
     val newX = x + dx
     val newY = y + dy
     return when {
-        newX > ARENA_X.last - RADIUS || newX < ARENA_X.first + RADIUS -> Ball(x, newY, -dx, dy)
-        newY < ARENA_Y.first + RADIUS                                 -> Ball(newX, y, dx, -dy)
+        newX !in 0 - RADIUS..game.area.width + RADIUS        -> Ball(x, newY, -dx, dy)
+        newY < 0 + RADIUS                                    -> Ball(newX, y, dx, -dy)
         newX in game.racket.x..(game.racket.x + RACKET_WIDTH) && newY in RACKET_Y..RACKET_Y + RACKET_HEIGHT
-                && this.dy > 0 -> Ball(x, y, dx, -dy)
-        else                                                          -> Ball(newX, newY, dx, dy)
+                && this.dy > 0                               -> Ball(x, y, dx, -dy)
+        else                                                 -> Ball(newX, newY, dx, dy)
     }
 }

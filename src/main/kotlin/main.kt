@@ -1,30 +1,29 @@
 import pt.isel.canvas.*
 
+data class Area(val width:Int, val height:Int)
 
-val ARENA_X = 0..400
-
-val ARENA_Y = 0..600
 
 /**
  * Program entry point for a version of MultiBall
  */
 fun main() {
     onStart{
-        val arena = Canvas(ARENA_X.last, ARENA_Y.last, BLACK)
-        var game = Game(emptyList(), Racket(RACKET_X))
+        var game = Game(Area(WIDTH,HEIGHT),emptyList(), Racket(RACKET_X))
+        val arena = Canvas(game.area.width, game.area.height, BLACK)
         arena.drawGame(game)
         arena.onMouseMove { me ->
-            game = if (me.x - RACKET_WIDTH/2 > ARENA_X.first && me.x + RACKET_WIDTH/2 < ARENA_X.last)
-                    Game(game.balls, Racket(me.x - RACKET_WIDTH/2)) else game
+            game = if (me.x - RACKET_WIDTH/2 > 0 && me.x + RACKET_WIDTH/2 < game.area.width)
+                    Game(game.area, game.balls, Racket(me.x - RACKET_WIDTH/2)) else game
                 arena.drawGame(game)
         }
         arena.onTimeProgress(10){
-            game = Game(game.moveBalls(), game.racket)
+            game = Game(game.area, game.moveBalls(), game.racket)
             arena.drawGame(game)
         }
         arena.onTimeProgress(5000){
+            if(game.balls.isEmpty())
+                arena.close()
             game = game.newBall()
-            println(game.balls)
         }
     }
     onFinish {}
