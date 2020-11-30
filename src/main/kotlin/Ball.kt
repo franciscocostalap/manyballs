@@ -17,6 +17,7 @@ data class Ball(val x:Int, val y:Int, val dx:Int, val dy:Int)
  * Ball's radius.
  */
 
+//Ball(arena.width/2, arena.height/2, DELTAX, DELTAY) Starting ball
 const val RADIUS = 7
 
 /**
@@ -27,12 +28,7 @@ const val DELTAY = -4
 /**
  * Ball's horizontal coordinate starting displacement
  */
-val DELTAX = (-6..6).random()
-
-val ARENA_X = 0..400
-
-val ARENA_Y = 0..600
-
+ val DELTAX = -6..6
 
 /**
  * Draws a ball.
@@ -45,12 +41,14 @@ fun Canvas.drawBall(b:Ball){
     drawCircle(b.x, b.y, RADIUS, CYAN)
 }
 
-fun Ball.move():Ball{
+fun Ball.move(game:Game):Ball{
     val newX = x + dx
     val newY = y + dy
     return when {
         newX > ARENA_X.last - RADIUS || newX < ARENA_X.first + RADIUS -> Ball(x, newY, -dx, dy)
-        newY > ARENA_Y.last - RADIUS || newY < ARENA_Y.first + RADIUS -> Ball(newX, y, dx, -dy)
+        newY < ARENA_Y.first + RADIUS                                 -> Ball(newX, y, dx, -dy)
+        newX in game.racket.x..(game.racket.x + RACKET_WIDTH) && newY in RACKET_Y..RACKET_Y + RACKET_HEIGHT
+                && this.dy > 0 -> Ball(x, y, dx, -dy)
         else                                                          -> Ball(newX, newY, dx, dy)
     }
 }

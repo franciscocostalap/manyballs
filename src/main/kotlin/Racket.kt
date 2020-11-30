@@ -14,8 +14,6 @@ data class Racket(val x:Int)
 const val RACKET_WIDTH = 90
 /**
  * Main rectangle height.
- *
- * Must be even.
  */
 const val RACKET_HEIGHT = 10
 
@@ -79,3 +77,4 @@ fun Canvas.drawRacket(rket:Racket) {
     drawCorners()
     drawIntermediate()
 }
+
