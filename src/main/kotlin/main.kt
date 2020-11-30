@@ -21,7 +21,7 @@ fun main() {
             arena.drawGame(game)
         }
         arena.onTimeProgress(5000){time ->
-            if(game.balls.isEmpty() && time > 5001)
+            if(game.balls.isEmpty() && time > 5100)
                 arena.close()
             game = game.newBall()
             println(time)
