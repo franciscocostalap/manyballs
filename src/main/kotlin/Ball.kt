@@ -13,11 +13,10 @@ import pt.isel.canvas.Canvas
  * @property dy vertical coordinate variation.
  */
 data class Ball(val x:Int, val y:Int, val dx:Int, val dy:Int)
+
 /**
  * Ball's radius.
  */
-
-//Ball(arena.width/2, arena.height/2, DELTAX, DELTAY) Starting ball
 const val RADIUS = 7
 
 /**

@@ -12,8 +12,8 @@ data class Game(val balls:List<Ball>, val racket: Racket)
 
 fun Canvas.drawGame(g:Game){
     erase()
-    drawText(ARENA_X.last/2, ARENA_Y.last, g.balls.size.toString(), WHITE, 50)
-    g.balls.forEach {ball ->  drawBall(ball)}
+    drawText(ARENA_X.last/2, ARENA_Y.last, g.balls.size.toString(), WHITE, 30)
+    g.balls.forEach {drawBall(it)}
     drawRacket(g.racket)
 
 }
@@ -28,6 +28,6 @@ fun Canvas.drawGame(g:Game){
 fun Game.newBall() = Game(this.balls + Ball(ARENA_X.last/2, ARENA_Y.last - RADIUS, DELTAX.random(), DELTAY), racket)
 
 fun Game.moveBalls():List<Ball>{
-    val filteredBalls = balls.filter {it.y in ARENA_Y.first..ARENA_Y.last + 2*RADIUS}
-    return if (balls.any {it.y !in ARENA_Y.first..ARENA_Y.last + 2*RADIUS})filteredBalls else balls.map {it.move(this)}
+    val filteredBalls = balls.filter {it.y in ARENA_Y + 2*RADIUS}
+    return if (balls.any {it.y !in ARENA_Y + 2*RADIUS})filteredBalls else balls.map {it.move(this)}
 }
