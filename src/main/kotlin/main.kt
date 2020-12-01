@@ -16,11 +16,13 @@ fun main() {
                     Game(game.area, game.balls, Racket(me.x - RACKET_WIDTH/2)) else game
                 arena.drawGame(game)
         }
-        arena.onTime(5001) {
+        arena.onTime(5000) {
             arena.onTimeProgress(10) {
                 if(game.balls.isEmpty())
                     arena.close()
-                game = Game(game.area, game.moveBalls(), game.racket)
+                //TODO: filterBalls() dúvida
+                game = Game(game.area, game.balls.map{it.move(game)}, game.racket)
+                game = Game(game.area, game.filterBalls(), game.racket)
                 arena.drawGame(game)
             }
         }

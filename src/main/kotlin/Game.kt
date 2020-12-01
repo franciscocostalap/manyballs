@@ -30,8 +30,6 @@ fun Canvas.drawGame(g:Game){
  * @return Games's list of balls with one more ball.
  */
 fun Game.newBall() = Game(this.area,this.balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
+//TODO: Spagetthi
+fun Game.filterBalls() = balls.filter {it.y in 0..(this.area.height + 2*RADIUS)}
 
-fun Game.moveBalls():List<Ball>{
-    val filteredBalls = balls.filter {it.y in 0..(this.area.height + 2*RADIUS)}
-    return if (balls.any {it.y !in 0..area.height + 2*RADIUS})filteredBalls else balls.map {it.move(this)}
-}
