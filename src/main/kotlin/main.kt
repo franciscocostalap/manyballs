@@ -15,7 +15,7 @@ fun main() {
         }
         arena.onTimeProgress(10) {
             game = Game(game.area, game.moveBalls(), game.racket)
-            if(game.balls.isEmpty())
+            if(game.balls.isEmpty() && it > 5100)
                 arena.close()
             arena.drawGame(game)
         }

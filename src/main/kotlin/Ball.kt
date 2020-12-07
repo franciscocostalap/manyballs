@@ -43,29 +43,35 @@ fun Canvas.drawBall(b:Ball){
 fun Ball.move(game:Game):Ball{
     val newX = x + dx
     val newY = y + dy
-    fun centerHit():Boolean =
-        newX in game.racket.x + CORNER_WIDTH +INTERMEDIATE_WIDTH..(game.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH)
+    if(newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0) {
+        return when {
+            // center
+            newX in game.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH..(game.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH)
+            -> Ball(x, y, dx, -dy)
 
-    fun rightCornerHit():Boolean =
-        (newX - RADIUS in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH)..(game.racket.x + RACKET_WIDTH)
-        || newX in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH)..(game.racket.x + RACKET_WIDTH))
-    fun leftCornerHit():Boolean =
-        (newX in game.racket.x..(game.racket.x + CORNER_WIDTH)
-        || newX + RADIUS in game.racket.x..(game.racket.x + CORNER_WIDTH))
-    fun leftInterHit():Boolean =
-        newX in game.racket.x..(game.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH)
-    fun rightInterHit():Boolean =
-        newX in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH)..(game.racket.x  + RACKET_WIDTH - CORNER_WIDTH)
-    return when {
-        newX !in 0 + RADIUS..game.area.width - RADIUS  -> Ball(x, newY, -dx, dy)
-        newY < 0 + RADIUS -> Ball(newX, y, dx, -dy)
-        centerHit()       -> Ball(x, y, dx, -dy)
-        leftCornerHit()   -> Ball(x, y, if(dx - CORNER_ACCEL > DELTAX.first) dx - CORNER_ACCEL else  DELTAX.first, -dy)
-        rightCornerHit()  -> Ball(x, y, if(dx + CORNER_ACCEL < DELTAX.last) dx + CORNER_ACCEL else  DELTAX.last, -dy)
-        leftInterHit()    -> Ball(x, y, if(dx - INTERMEDIATE_ACCEL > DELTAX.first) dx - INTERMEDIATE_ACCEL
-                                        else  DELTAX.first, -dy)
-        rightInterHit()   -> Ball(x, y, if(dx + INTERMEDIATE_ACCEL < DELTAX.last) dx + INTERMEDIATE_ACCEL
-                                        else  DELTAX.last, -dy)
-        else              -> Ball(newX, newY, dx, dy)
+            // right corner
+            (newX - RADIUS in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH)..(game.racket.x + RACKET_WIDTH)
+                    || newX in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH)..(game.racket.x + RACKET_WIDTH))
+            -> Ball(x, y, if (dx + CORNER_ACCEL < DELTAX.last) dx + CORNER_ACCEL else DELTAX.last, -dy)
+
+            //left corner
+            (newX in game.racket.x..(game.racket.x + CORNER_WIDTH)
+            || newX + RADIUS in game.racket.x..(game.racket.x + CORNER_WIDTH))
+            -> Ball(x, y, if (dx - CORNER_ACCEL > DELTAX.first) dx - CORNER_ACCEL else DELTAX.first, -dy)
+
+            //left inter hit
+            newX in game.racket.x + CORNER_WIDTH..(game.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH)
+            -> Ball(x, y, if (dx - INTERMEDIATE_ACCEL > DELTAX.first) dx - INTERMEDIATE_ACCEL else DELTAX.first, -dy)
+
+            //Right inter hit
+            newX in (game.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH)..(game.racket.x + RACKET_WIDTH - CORNER_WIDTH)
+            -> Ball(x, y, if (dx + INTERMEDIATE_ACCEL < DELTAX.last) dx + INTERMEDIATE_ACCEL else DELTAX.last, -dy)
+            else -> Ball(newX, newY, dx, dy)
+        }
     }
+    else return when{
+            newX !in 0 + RADIUS..game.area.width - RADIUS  -> Ball(x, newY, -dx, dy)
+            newY < 0 + RADIUS                              -> Ball(newX, y, dx, -dy)
+            else                                           -> Ball(newX, newY, dx, dy)
+        }
 }
