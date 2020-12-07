@@ -10,6 +10,14 @@ import pt.isel.canvas.WHITE
  */
 data class Game(val area:Area, val balls:List<Ball>, val racket: Racket)
 
+/**
+ * Game's Area information.
+ *
+ * @property width game's window width in pixels.
+ *
+ * @property height game's window height in pixels.
+ */
+data class Area(val width:Int, val height:Int)
 
 const val WIDTH = 400
 const val HEIGHT = 600
@@ -29,7 +37,10 @@ fun Canvas.drawGame(g:Game){
  *
  * @return Games's list of balls with one more ball.
  */
-fun Game.newBall() = Game(this.area,this.balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
-//TODO: Spagetthi
-fun Game.filterBalls() = balls.filter {it.y in 0..(this.area.height + 2*RADIUS)}
+fun Game.newBall() = Game(area,balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
+
+
+fun Game.moveBalls() = balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
+
+
 
