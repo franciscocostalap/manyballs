@@ -22,6 +22,9 @@ data class Area(val width:Int, val height:Int)
 const val WIDTH = 400
 const val HEIGHT = 600
 
+/**
+ * TODO: drawGame doc
+ */
 fun Canvas.drawGame(g:Game){
     erase()
     drawText(g.area.width/2, g.area.height, g.balls.size.toString(), WHITE, 30)
@@ -37,10 +40,14 @@ fun Canvas.drawGame(g:Game){
  *
  * @return Games's list of balls with one more ball.
  */
-fun Game.newBall() = Game(area,balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
+fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
 
 
+/**
+ * TODO moveBalls doc
+ */
 fun Game.moveBalls() = balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
+
 
 
 

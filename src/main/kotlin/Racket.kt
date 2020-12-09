@@ -20,15 +20,15 @@ const val RACKET_HEIGHT = 10
 /**
  * Corner rectangle width and color.
  */
-//TODO: ACCEl
+//TODO: ACCEl DOC
 const val CORNER_WIDTH = 10
 const val CORNER_COLOR = 0xFF3333
 const val CORNER_ACCEL = 3
 
 /**
- * Intermediate rectangle width and color.
+ * Intermediate rectangle width, color.
  */
-//TODO: ACCEl
+//TODO: ACCEl DOC
 const val INTERMEDIATE_WIDTH = 15
 const val INTERMEDIATE_COLOR = 0xFF6666
 const val INTERMEDIATE_ACCEL = 1
