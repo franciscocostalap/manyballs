@@ -25,7 +25,7 @@ const val RADIUS = 7
 const val DELTAY = -4
 
 /**
- * Ball's horizontal coordinate starting displacement in pixels.
+ * Ball's horizontal coordinate displacement interval in pixels.
  */
  val DELTAX = -6..6
 
@@ -41,7 +41,7 @@ fun Canvas.drawBall(b:Ball){
 }
 
 /**
- * TODO: Ball.move DOC e deixar mais limpo
+ *
  */
 fun Ball.move(game:Game):Ball{
     val newX = x + dx
@@ -51,29 +51,27 @@ fun Ball.move(game:Game):Ball{
     val leftInterX = game.racket.x + CORNER_WIDTH
     val rightCornerX = game.racket.x + RACKET_WIDTH - CORNER_WIDTH
     val racketEndX = game.racket.x + RACKET_WIDTH
-    if(newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0) {
+    if (newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0) {
         return when {
-            // center
-            newX in centerX..rightInterX
-            -> Ball(x, y, dx, -dy)
-            // right corner
+            // center hit
+            newX in centerX..rightInterX -> Ball(x, y, dx, -dy)
+            // right corner hit
             newX in rightCornerX until racketEndX || newX - RADIUS in rightCornerX until racketEndX
-            -> Ball(x, y, if (dx + CORNER_ACCEL < DELTAX.last) dx + CORNER_ACCEL else DELTAX.last, -dy)
-            //left corner
+            -> Ball(x, y, limit(dx + CORNER_ACCEL, -6, 6), -dy)
+            //left corner hit
             newX in game.racket.x until leftInterX || newX + RADIUS in game.racket.x until leftInterX
-            -> Ball(x, y, if (dx - CORNER_ACCEL > DELTAX.first) dx - CORNER_ACCEL else DELTAX.first, -dy)
-            //left inter hit
-            newX in leftInterX until centerX
-            -> Ball(x, y, if (dx - INTERMEDIATE_ACCEL > DELTAX.first) dx - INTERMEDIATE_ACCEL else DELTAX.first, -dy)
-            //Right inter hit
-            newX in rightInterX until rightCornerX
-            -> Ball(x, y, if (dx + INTERMEDIATE_ACCEL < DELTAX.last) dx + INTERMEDIATE_ACCEL else DELTAX.last, -dy)
+            -> Ball(x, y, limit(dx - CORNER_ACCEL, -6 , 6), -dy)
+            //left intermediate part hit
+            newX in leftInterX until centerX       -> Ball(x, y, limit(dx - INTERMEDIATE_ACCEL, -6, 6), -dy)
+            //Right intermediate part hit
+            newX in rightInterX until rightCornerX -> Ball(x, y, limit(dx + INTERMEDIATE_ACCEL, -6 , 6), -dy)
             else -> Ball(newX, newY, dx, dy)
         }
     }
-    else return when{
+    else return when {
             newX !in 0 + RADIUS..game.area.width - RADIUS  -> Ball(x, newY, -dx, dy)
             newY < 0 + RADIUS                              -> Ball(newX, y, dx, -dy)
             else                                           -> Ball(newX, newY, dx, dy)
-        }
+    }
 }
+

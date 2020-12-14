@@ -23,7 +23,7 @@ const val WIDTH = 400
 const val HEIGHT = 600
 
 /**
- * TODO: drawGame doc
+ *
  */
 fun Canvas.drawGame(g:Game){
     erase()
@@ -44,9 +44,12 @@ fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height + RAD
 
 
 /**
- * TODO moveBalls doc
+ *
  */
 fun Game.moveBalls() = balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
+
+
+fun limit(value:Int, min:Int, max:Int) = if (value in min..max) value else if (value>max) max else min
 
 
 
