@@ -74,7 +74,7 @@ fun Ball.move(g:Game):Ball{
      *
      * @return The same ball with it's displacement altered.
      */
-    fun Ball.collision():Ball{
+    fun Ball.collide():Ball{
         val centerRectX = g.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH
         val rightinterX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH
         val leftinterX = g.racket.x + CORNER_WIDTH
@@ -91,7 +91,7 @@ fun Ball.move(g:Game):Ball{
             }, -dy)
     }
     return if (newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0
-              && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX )) collision()
+              && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX )) collide()
     else when {
         newX !in 0 + RADIUS..g.area.width - RADIUS  -> Ball(x, newY, -dx, dy)
         newY < 0 + RADIUS                           -> Ball(newX, y, dx, -dy)
