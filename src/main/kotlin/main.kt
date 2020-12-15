@@ -10,7 +10,7 @@ fun main() {
         val arena = Canvas(game.area.width, game.area.height, BLACK)
         arena.drawGame(game)
         arena.onMouseMove { me ->
-            game = if (me.x - RACKET_WIDTH/2 > 0 && me.x + RACKET_WIDTH/2 < game.area.width)
+            game = if (me.x > RACKET_WIDTH/2 && me.x < game.area.width - RACKET_WIDTH/2)
                     Game(game.area, game.balls, Racket(me.x - RACKET_WIDTH/2)) else game
             arena.drawGame(game)
         }
@@ -18,8 +18,9 @@ fun main() {
             val movedBalls = game.moveBalls()
             if (game.balls.isNotEmpty() && movedBalls.isEmpty())
                 arena.close()
-            else game = Game(game.area, movedBalls, game.racket)
-            arena.drawGame(game)
+            else{ game = Game(game.area, movedBalls, game.racket)
+                  arena.drawGame(game)
+            }
             }
         arena.onTimeProgress(5000){
             game = game.newBall()
