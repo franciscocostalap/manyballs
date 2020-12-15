@@ -18,14 +18,18 @@ const val RACKET_WIDTH = 90
 const val RACKET_HEIGHT = 10
 
 /**
- * Corner rectangle width and color, and displacement variation.
+ * Corner rectangle width and color,
+ * and ball's displacement variation
+ * if it hits the corner.
  */
 const val CORNER_WIDTH = 10
 const val CORNER_COLOR = 0xFF3333
 const val CORNER_ACCEL = 3
 
 /**
- * Intermediate rectangle width, color, and displacement variation.
+ * Intermediate rectangle width, color,
+ * and ball's displacement variation
+ * if it hits the intermediate part.
  */
 const val INTERMEDIATE_WIDTH = 15
 const val INTERMEDIATE_COLOR = 0xFF6666
@@ -50,8 +54,6 @@ const val RACKET_Y = 550
 fun Canvas.drawRacket(rket:Racket) {
     /**
      * Draws the corner rectangles of the racket.
-     *
-     * Only usable inside drawRacket().
      */
     fun drawCorners() {
         drawRect(rket.x , RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
@@ -63,8 +65,6 @@ fun Canvas.drawRacket(rket:Racket) {
     }
     /**
      * Draws the intermediate rectangles of the racket.
-     *
-     * Only usable inside drawRacket().
      */
     fun drawIntermediate(){
         drawRect(rket.x + CORNER_WIDTH, RACKET_Y, INTERMEDIATE_WIDTH, RACKET_HEIGHT / 2, INTERMEDIATE_COLOR)
@@ -79,4 +79,3 @@ fun Canvas.drawRacket(rket:Racket) {
     drawCorners()
     drawIntermediate()
 }
-

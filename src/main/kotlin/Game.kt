@@ -23,7 +23,11 @@ const val WIDTH = 400
 const val HEIGHT = 600
 
 /**
+ * Draws the game's content.(Balls in game, ball's counter and Racket.
  *
+ * @receiver Canvas.
+ *
+ * @param g Game to draw.
  */
 fun Canvas.drawGame(g:Game){
     erase()
@@ -36,21 +40,21 @@ fun Canvas.drawGame(g:Game){
 /**
  * Adds one more ball to the game.
  *
- * @receiver The Game
+ * @receiver The game
  *
  * @return Games's list of balls with one more ball.
  */
-fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height + RADIUS, DELTAX.random(), DELTAY), racket)
+fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height, DELTAX.random(), DELTAY), racket)
 
 
 /**
+ *  Moves every ball inside Game's list of balls,
+ *  and removes from it, the balls that leave
+ *  the window from it's bottom border.
  *
+ *  @receiver The game.
+ *
+ *  @return A list of balls with the moved balls in game.
  */
 fun Game.moveBalls() = balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
-
-
-fun limit(value:Int, min:Int, max:Int) = if (value in min..max) value else if (value>max) max else min
-
-
-
 
