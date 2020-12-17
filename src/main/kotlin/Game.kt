@@ -19,11 +19,14 @@ data class Game(val area:Area, val balls:List<Ball>, val racket: Racket)
  */
 data class Area(val width:Int, val height:Int)
 
+/**
+ * Window (Area) Dimensions
+ */
 const val WIDTH = 400
 const val HEIGHT = 600
 
 /**
- * Draws the game's content.(Balls in game, ball's counter and Racket.
+ * Draws the game's content.(Ball's counter, balls in game, and Racket.
  *
  * @receiver Canvas.
  *

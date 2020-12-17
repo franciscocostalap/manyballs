@@ -25,7 +25,7 @@ const val RADIUS = 7
 const val DELTAY = -4
 
 /**
- * Ball's horizontal coordinate displacement interval in pixels.
+ * Ball's horizontal coordinate displacement range in pixels.
  */
  val DELTAX = -6..6
 
@@ -42,22 +42,26 @@ fun Canvas.drawBall(b:Ball){
 
 
 /**
- * Limits Ball horizontal displacement to DELTAX interval.
+ * Limits a value to an Integer range.
  *
- * @return [value] limited to DELTAX.
+ * @param value An integer
+ *
+ * @param range An integer range
+ *
+ * @return [value] limited to the range
  */
-fun limitDeltaX(value:Int) = when {
-    value in DELTAX   -> value
-    value>DELTAX.last -> DELTAX.last
-    else              -> DELTAX.first
+fun limitTo(value:Int, range:IntRange) = when {
+    value in range   -> value
+    value>range.last -> range.last
+    else             -> range.first
 }
 
 /**
  * Moves a ball based on it's displacement and makes it bounce on window borders and racket.
  *
+ * @receiver A ball.
  * @param g  The game.
  *
- * @receiver A ball.
  *
  * @return A moved ball.
  */
@@ -65,33 +69,35 @@ fun Ball.move(g:Game):Ball{
     val newX = x + dx
     val newY = y + dy
     val racketEndX = g.racket.x + RACKET_WIDTH
-
+    val racketHit = (newY + RADIUS) in (RACKET_Y..RACKET_Y + RACKET_HEIGHT) && this.dy > 0
+                && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX)
     /**
      * Checks if the ball collides with the racket, and alters the ball's displacement
      * based on which part of the racket the ball collided with.
      *
-     * @receiver A ball
-     *
      * @return The same ball with it's displacement altered.
      */
-    fun Ball.collide():Ball{
+    fun collide():Ball{
+        // Racket Parts horizontal position based on Racket's horizontal position
         val centerRectX = g.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH
         val rightinterX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH
         val leftinterX = g.racket.x + CORNER_WIDTH
         val rightcornerX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH
+        // Collision Conditions
+        val leftCornerHit = newX in g.racket.x until leftinterX || newX + RADIUS in g.racket.x until leftinterX
+        val rightCornerHit = newX in rightcornerX..racketEndX || newX - RADIUS in rightcornerX..racketEndX
+        val leftInterHit = newX in leftinterX until centerRectX
+        val rightInterHit = newX in rightinterX until rightcornerX
         return Ball(x, y,
             when {
-                newX in rightcornerX..racketEndX
-                || newX - RADIUS in rightcornerX..racketEndX    -> limitDeltaX(dx + CORNER_ACCEL)
-                newX in g.racket.x until leftinterX
-                || newX + RADIUS in g.racket.x until leftinterX -> limitDeltaX(dx - CORNER_ACCEL)
-                newX in leftinterX until centerRectX            -> limitDeltaX(dx - INTERMEDIATE_ACCEL)
-                newX in rightinterX until rightcornerX          -> limitDeltaX(dx + INTERMEDIATE_ACCEL)
+                rightCornerHit -> limitTo(dx + CORNER_ACCEL, DELTAX)
+                leftCornerHit  -> limitTo(dx - CORNER_ACCEL, DELTAX)
+                leftInterHit   -> limitTo(dx - INTERMEDIATE_ACCEL, DELTAX)
+                rightInterHit  -> limitTo(dx + INTERMEDIATE_ACCEL, DELTAX)
                 else -> dx
             }, -dy)
     }
-    return if (newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0
-              && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX )) collide()
+    return if (racketHit) collide()
     else when {
         newX !in 0 + RADIUS..g.area.width - RADIUS  -> Ball(x, newY, -dx, dy)
         newY < 0 + RADIUS                           -> Ball(newX, y, dx, -dy)
