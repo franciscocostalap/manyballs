@@ -29,6 +29,7 @@ const val DELTAY = -4
  */
  val DELTAX = -6..6
 
+
 /**
  * Draws a ball.
  *
@@ -84,10 +85,10 @@ fun Ball.move(g:Game):Ball{
         val leftinterX = g.racket.x + CORNER_WIDTH
         val rightcornerX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH
         // Collision Conditions
-        val leftCornerHit = newX in g.racket.x until leftinterX || newX + RADIUS in g.racket.x until leftinterX
-        val rightCornerHit = newX in rightcornerX..racketEndX || newX - RADIUS in rightcornerX..racketEndX
-        val leftInterHit = newX in leftinterX until centerRectX
-        val rightInterHit = newX in rightinterX until rightcornerX
+        val leftCornerHit:Boolean = newX in g.racket.x until leftinterX || newX + RADIUS in g.racket.x until leftinterX
+        val rightCornerHit:Boolean = newX in rightcornerX..racketEndX || newX - RADIUS in rightcornerX..racketEndX
+        val leftInterHit:Boolean = newX in leftinterX until centerRectX
+        val rightInterHit:Boolean = newX in rightinterX until rightcornerX
         return Ball(x, y,
             when {
                 rightCornerHit -> limitTo(dx + CORNER_ACCEL, DELTAX)
@@ -104,3 +105,4 @@ fun Ball.move(g:Game):Ball{
         else                                        -> Ball(newX, newY, dx, dy)
     }
 }
+

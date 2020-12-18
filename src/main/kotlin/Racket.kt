@@ -6,12 +6,12 @@ import pt.isel.canvas.WHITE
  *
  * @property x horizontal position
  */
-data class Racket(val x:Int)
+data class Racket(val x:Int, val width:Int, val ballOn:Boolean = true)
 
 /**
  * Main rectangle width.
  */
-const val RACKET_WIDTH = 90
+const val RACKET_WIDTH = 60
 /**
  * Main rectangle height.
  */

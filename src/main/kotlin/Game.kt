@@ -1,4 +1,5 @@
 import pt.isel.canvas.Canvas
+import pt.isel.canvas.MouseEvent
 import pt.isel.canvas.WHITE
 
 /**
@@ -10,20 +11,6 @@ import pt.isel.canvas.WHITE
  */
 data class Game(val area:Area, val balls:List<Ball>, val racket: Racket)
 
-/**
- * Game's Area information.
- *
- * @property width game's window width in pixels.
- *
- * @property height game's window height in pixels.
- */
-data class Area(val width:Int, val height:Int)
-
-/**
- * Window (Area) Dimensions
- */
-const val WIDTH = 400
-const val HEIGHT = 600
 
 /**
  * Draws the game's content.(Ball's counter, balls in game, and Racket.
@@ -35,7 +22,8 @@ const val HEIGHT = 600
 fun Canvas.drawGame(g:Game){
     erase()
     drawText(g.area.width/2, g.area.height, g.balls.size.toString(), WHITE, 30)
-    g.balls.forEach {drawBall(it)}
+    g.balls.forEach {ball ->drawBall(ball)}
+    drawArea(g.area)
     drawRacket(g.racket)
 
 }
@@ -47,7 +35,9 @@ fun Canvas.drawGame(g:Game){
  *
  * @return Games's list of balls with one more ball.
  */
-fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height, DELTAX.random(), DELTAY), racket)
+fun Game.newBall():Game = if (balls.isEmpty())
+    Game(area,balls + Ball(racket.x+RACKET_WIDTH/2, RACKET_Y-RADIUS, 0, 0), racket)
+    else this
 
 
 /**
@@ -59,5 +49,22 @@ fun Game.newBall():Game = Game(area,balls + Ball(area.width/2, area.height, DELT
  *
  *  @return A list of balls with the moved balls in game.
  */
-fun Game.moveBalls() = balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
+fun Game.moveBalls() = if (racket.ballOn) balls.map{it.move(this)}.filter { it.y in 0..(area.height + 2*RADIUS)}
+else balls
+
+fun Game.moveRacket(mEvent:MouseEvent):Game {
+    var racketNewX = racket.x
+    val newBallsX = racket.x+RACKET_WIDTH/2
+    val newBalls = balls.map {Ball(newBallsX,  RACKET_Y-RADIUS, 0, 0)}
+    if (mEvent.x in RACKET_WIDTH / 2..area.width - RACKET_WIDTH / 2){
+         racketNewX = mEvent.x - RACKET_WIDTH / 2
+    }
+    return if(racket.ballOn)
+        Game(area, newBalls, Racket(racketNewX, racket.width))
+    else this
+
+}
+
+
+
 

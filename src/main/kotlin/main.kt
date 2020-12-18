@@ -15,25 +15,19 @@ import pt.isel.canvas.*
  */
  fun main() {
     onStart {
-        var game = Game(Area(WIDTH, HEIGHT), emptyList(), Racket(RACKET_X))
+        var game = Game(Area(WIDTH, HEIGHT, levelOneBricks), emptyList(), Racket(RACKET_X, RACKET_WIDTH))
         val arena = Canvas(game.area.width, game.area.height, BLACK)
         arena.drawGame(game)
         arena.onMouseMove { me ->
-            game = if (me.x in RACKET_WIDTH / 2..game.area.width - RACKET_WIDTH / 2)
-                Game(game.area, game.balls, Racket(me.x - RACKET_WIDTH / 2)) else game
+            game = game.moveRacket(me)
             arena.drawGame(game)
         }
-        arena.onTimeProgress(10) {
-            val movedBalls = game.moveBalls()
-            if (game.balls.isNotEmpty() && movedBalls.isEmpty())
-                arena.close()
-            else {
-                game = Game(game.area, movedBalls, game.racket)
-                arena.drawGame(game)
-            }
+        arena.onMouseDown {
+                game = game.newBall()
         }
-        arena.onTimeProgress(5000) {
-            game = game.newBall()
+        arena.onTimeProgress(10) {
+            game = Game(game.area, game.moveBalls(), game.racket)
+            arena.drawGame(game)
         }
     }
     onFinish {}
