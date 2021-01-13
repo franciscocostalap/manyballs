@@ -5,8 +5,10 @@ import pt.isel.canvas.WHITE
  * Racket's information.
  *
  * @property x horizontal position
+ *
+ * @property width Racket's width
  */
-data class Racket(val x:Int, val width:Int, val ballOn:Boolean = true)
+data class Racket(val x:Int, val width:Int, val ballOn:Boolean)
 
 /**
  * Main rectangle width.
@@ -38,11 +40,16 @@ const val INTERMEDIATE_ACCEL = 1
 /**
  * Racket starting horizontal position.
  */
-const val RACKET_X = 155
+const val RACKET_X = WIDTH/2 - RACKET_WIDTH/2
 /**
  * Racket vertical position.
  */
 const val RACKET_Y = 550
+
+/**
+ * Starting Racket
+ */
+val startingRacket = Racket(RACKET_X, RACKET_WIDTH, true)
 
 /**
  * Draws the racket.
@@ -57,7 +64,7 @@ fun Canvas.drawRacket(rket:Racket) {
      */
     fun drawCorners() {
         drawRect(rket.x , RACKET_Y, CORNER_WIDTH, RACKET_HEIGHT / 2, CORNER_COLOR)
-        drawRect(rket.x + (RACKET_WIDTH - CORNER_WIDTH)
+        drawRect(rket.x + (rket.width - CORNER_WIDTH)
                 , RACKET_Y
                 , CORNER_WIDTH
                 , RACKET_HEIGHT / 2
@@ -75,7 +82,7 @@ fun Canvas.drawRacket(rket:Racket) {
                 , INTERMEDIATE_COLOR)
     }
 
-    drawRect(rket.x, RACKET_Y, RACKET_WIDTH, RACKET_HEIGHT, WHITE)
+    drawRect(rket.x, RACKET_Y, rket.width, RACKET_HEIGHT, WHITE)
     drawCorners()
     drawIntermediate()
 }
