@@ -8,7 +8,7 @@ import pt.isel.canvas.WHITE
  *
  * @property width Racket's width
  */
-data class Racket(val x:Int, val width:Int, val ballOn:Boolean)
+data class Racket(val x:Int, val width:Int)
 
 /**
  * Main rectangle width.
@@ -49,7 +49,7 @@ const val RACKET_Y = 550
 /**
  * Starting Racket
  */
-val startingRacket = Racket(RACKET_X, RACKET_WIDTH, true)
+val startingRacket = Racket(RACKET_X, RACKET_WIDTH)
 
 /**
  * Draws the racket.

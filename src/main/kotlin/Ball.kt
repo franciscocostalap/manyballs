@@ -1,138 +1,109 @@
-import pt.isel.canvas.CYAN
-import pt.isel.canvas.Canvas
+import pt.isel.canvas.*
 import kotlin.math.sqrt
 
 /**
- * Ball information.
+ * Ball's information.
  *
- * @property x horizontal coordinate in pixels.
+ * @property x horizontal coordinate.
  *
- * @property y vertical coordinate in pixels.
+ * @property y vertical coordinate.
  *
- * @property dx horizontal coordinate variation in pixels.
+ * @property dx horizontal coordinate variation.
  *
- * @property dy vertical coordinate variation in pixels.
+ * @property dy vertical coordinate variation.
  */
-data class Ball(val x:Int, val y:Int, val dx:Int, val dy:Int)
-
+data class Ball(val x :Int, val y :Int, val dx :Int, val dy :Int, val onRacket:Boolean=false)
 /**
- * Ball's radius in pixels.
+ * Ball radius.
  */
 const val RADIUS = 7
 
 /**
- * Ball's vertical coordinate starting displacement in pixels.
+ * Ball vertical moving velocity.
  */
-const val DELTAY = -4
+const val DELTA_Y = -4
 
 /**
- * Ball's horizontal coordinate displacement range in pixels.
+ * Ball horizontal moving velocity.
  */
- val DELTAX = -6..6
+val DELTA_X = (-6..6)
+
+val startingBalls = emptyList<Ball>() + Ball(RACKET_X + RACKET_WIDTH / 2,RACKET_Y - RADIUS,0,0, true)
 
 /**
- * Starting Ball's List
- */
-val startingBalls = emptyList<Ball>() + Ball(RACKET_X+RACKET_WIDTH/2, RACKET_Y - RADIUS, 0, 0)
-
-/**
- * Draws a ball.
+ *  Draws a ball.
  *
- * @receiver where it draws.
- *
- * @param b Ball to draw.
+ *  @param b :Ball
  */
-fun Canvas.drawBall(b:Ball){
+fun Canvas.drawBall(b :Ball){
     drawCircle(b.x, b.y, RADIUS, CYAN)
 }
 
-
 /**
- * Limits a value to an Integer range.
+ * Limits Ball horizontal movement to DELTA_X interval.
  *
- * @param value An integer
- *
- * @param range An integer range
- *
- * @return [value] limited to the range
+ * @return [value] limited to DELTA_X.
  */
-fun limitTo(value:Int, range:IntRange) = when {
+fun limitTo(value:Int, range :IntRange) = when {
     value in range   -> value
     value>range.last -> range.last
-    else             -> range.first
+    else              -> range.first
 }
 
 /**
- * Moves a ball based on it's displacement and makes it bounce on window borders and racket.
+ * Moves a ball based on it's movement and makes it bounce on window borders and racket.
  *
- * @receiver A ball.
  * @param g  The game.
  *
+ * @receiver A ball.
  *
  * @return A moved ball.
  */
-fun Ball.move(g:Game):Ball{
+fun Ball.move(g:Game) :Ball{
     val newX = x + dx
     val newY = y + dy
     val racketEndX = g.racket.x + RACKET_WIDTH
-    val racketHit = (newY + RADIUS) in (RACKET_Y..RACKET_Y + RACKET_HEIGHT) && this.dy > 0
-                && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX)
+    val racketHit = (newY + RADIUS in RACKET_Y..RACKET_Y + RACKET_HEIGHT && this.dy > 0
+            && (newX + RADIUS in g.racket.x..racketEndX ||newX - RADIUS in g.racket.x..racketEndX ))
+
     /**
-     * Checks if the ball collides with the racket, and alters the ball's displacement
+     * Checks if the ball collides with the racket, and alters the ball's movement
      * based on which part of the racket the ball collided with.
      *
-     * @return The same ball with it's displacement altered.
+     * @receiver A ball
+     *
+     * @return The same ball with it's movement altered.
      */
-    fun collide():Ball{
-        // Racket Parts horizontal position based on Racket's horizontal position
-        val centerRectX = g.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH
-        val rightInterX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH
-        val leftInterX = g.racket.x + CORNER_WIDTH
-        val rightCornerX = g.racket.x + RACKET_WIDTH - CORNER_WIDTH
-        // Collision Conditions
-        val leftCornerHit:Boolean = newX in g.racket.x until leftInterX || newX + RADIUS in g.racket.x until leftInterX
-        val rightCornerHit:Boolean = newX in rightCornerX..racketEndX || newX - RADIUS in rightCornerX..racketEndX
-        val leftInterHit:Boolean = newX in leftInterX until centerRectX
-        val rightInterHit:Boolean = newX in rightInterX until rightCornerX
+    fun collision() :Ball{
+        // Different racket parts.
+        val center = g.racket.x + CORNER_WIDTH + INTERMEDIATE_WIDTH
+        val rightInter = g.racket.x + RACKET_WIDTH - CORNER_WIDTH - INTERMEDIATE_WIDTH
+        val leftInter = g.racket.x + CORNER_WIDTH
+        val rightCorner = g.racket.x + RACKET_WIDTH - CORNER_WIDTH
+        //  Collision conditions.
+        val rightInterHit = newX in rightInter until rightCorner
+        val leftInterHit = newX in leftInter until center
+        val rightCornerHit = newX in rightCorner..racketEndX || newX - RADIUS in rightCorner..racketEndX
+        val leftCornerHit = newX in g.racket.x until leftInter || newX + RADIUS in g.racket.x until leftInter
+        if (g.sound) playSound("racketHit")
         return Ball(x, y,
             when {
-                rightCornerHit -> limitTo(dx + CORNER_ACCEL, DELTAX)
-                leftCornerHit  -> limitTo(dx - CORNER_ACCEL, DELTAX)
-                leftInterHit   -> limitTo(dx - INTERMEDIATE_ACCEL, DELTAX)
-                rightInterHit  -> limitTo(dx + INTERMEDIATE_ACCEL, DELTAX)
-                else           -> dx
+                rightCornerHit  -> limitTo(dx + CORNER_ACCEL, DELTA_X)
+                leftCornerHit   -> limitTo(dx - CORNER_ACCEL, DELTA_X)
+                leftInterHit    -> limitTo(dx - INTERMEDIATE_ACCEL, DELTA_X)
+                rightInterHit   -> limitTo(dx + INTERMEDIATE_ACCEL, DELTA_X)
+                else -> dx
             }, -dy)
     }
-    return when {
-        newX !in 0 + RADIUS..g.area.width - RADIUS -> Ball(x, newY, -dx, dy)
-        newY < 0 + RADIUS                          -> Ball(newX, y, dx, -dy)
-        racketHit                                  -> collide()
-        else                                       -> Ball(newX, newY, dx, dy)
+    return if (racketHit) collision()
+    else when {
+        newX !in 0 + RADIUS..g.area.width - RADIUS  ->{/*playSound("wallHit");*/Ball(x, newY, -dx, dy)}
+        newY < 0 + RADIUS                           ->{/*playSound("wallHit");*/Ball(newX, y, dx, -dy)}
+        else                                        -> Ball(newX, newY, dx, dy)
     }
 }
-
-
-data class BrickCollision(val ball: Ball?, val brick:Brick?)
-
-fun Ball.brickCollide(bricks: List<Brick>):BrickCollision{
-    bricks.forEach{ brick ->
-        val xBrick = brick.x * BRICK_WIDTH
-        val yBrick = brick.y * BRICK_HEIGHT
-        val closestX = limitTo(this.x, xBrick..xBrick+BRICK_WIDTH)
-        val closestY = limitTo(this.y, yBrick..yBrick+BRICK_HEIGHT)
-        val collided = distance(this.x, this.y, closestX, closestY) <= RADIUS
-        if(collided){
-            if(closestX == xBrick && this.dx > 0 || closestX == xBrick + BRICK_WIDTH && this.dx < 0){
-                return BrickCollision(Ball(x, y, -dx, dy), brick)
-            }
-            if(closestY == yBrick && this.dy > 0 || closestY == yBrick + BRICK_HEIGHT && this.dy < 0){
-                return BrickCollision(Ball(x, y, dx, -dy), brick)
-            }
-        }
-    }
-    return BrickCollision(null, null)
-}
-
+//TODO Comentar BrickCollision data class
+data class BrickCollision(val ball: Ball, val bricks :List<Brick>)
 
 /**
  * Calculates the distance between two coordinates in pixels
@@ -142,10 +113,71 @@ fun distance(coord1X:Int, coord1Y:Int, coord2X:Int, coord2Y:Int):Float{
     val yDistance: Int = coord1Y - coord2Y
     return sqrt((xDistance.square() + yDistance.square()).toFloat())
 }
-
 /**
  * @receiver An Integer
  *
- * @return The integer power 2
+ * @return The integer squared
  */
 fun Int.square() = this * this
+
+
+/**
+ * Data class used in [brickCollide] to calculate:
+ *
+ * @property x: the horizontal position of one brick in pixels.
+ *
+ * @property y: the vertical position of one brick in pixels.
+ *
+ * @property closestX: closest horizontal coordinate to the ball
+ *
+ * @property closestY: closest vertical coordinate to the ball
+ */
+data class BrickCalc(val x :Int, val y :Int, val closestX :Int, val closestY :Int)
+//TODO: COMENTAR brickCollide()
+fun Ball.brickCollide(bricks: List<Brick>, sound:Boolean):BrickCollision{
+    fun brickCalc(brick :Brick) :BrickCalc{
+        val xBrick = brick.x * BRICK_WIDTH
+        val yBrick = brick.y * BRICK_HEIGHT
+        val closestX = limitTo(this.x, xBrick..xBrick+BRICK_WIDTH)
+        val closestY = limitTo(this.y, yBrick..yBrick+BRICK_HEIGHT)
+        return BrickCalc(xBrick, yBrick, closestX, closestY)
+    }
+    val finalBricks = bricks.filter{ brick ->
+        val calc = brickCalc(brick)
+        distance(this.x, this.y, calc.closestX, calc.closestY) <= RADIUS
+    }
+    //if (sound && finalBricks.isNotEmpty()) playSound("brickHit")
+    var finalBall = this
+    when (finalBricks.size) {
+        1 -> {
+            val calc = brickCalc(finalBricks[0])
+            val sideHit = (calc.closestX == calc.x && this.dx > 0 || calc.closestX == calc.x+BRICK_WIDTH && this.dx < 0)
+            val vertHit = (calc.closestY == calc.y && this.dy > 0 || calc.closestY == calc.y+BRICK_HEIGHT && this.dy < 0)
+            finalBall = when {
+                sideHit -> Ball(x,y,-dx,dy)
+                vertHit -> Ball(x, y, dx, -dy)
+                else    -> Ball(x, y, -dx, -dy)
+            }
+        }
+        2 -> {
+            val yCondition = finalBricks[0].y == finalBricks[1].y
+            val xCondition = finalBricks[0].x == finalBricks[1].x
+            val brickBelowOrTop = finalBricks[0].y == finalBricks[1].y + 1 || finalBricks[0].y == finalBricks[1].y-1
+            val brickRightOrLeft = finalBricks[0].x == finalBricks[1].x - 1 || finalBricks[0].x == finalBricks[1].x + 1
+            val twoBrickVertHit:Boolean = xCondition && brickBelowOrTop
+            val twoBrickSideHit:Boolean = yCondition && brickRightOrLeft
+            finalBall = when {
+                twoBrickSideHit -> Ball(x,y,dx,-dy)
+                twoBrickVertHit -> Ball(x,y,-dx,dy)
+                else            -> Ball(x, y, -dx, -dy)
+            }
+        }
+        3 -> finalBall = Ball(x, y, -dx, -dy)
+    }
+    return BrickCollision(finalBall, finalBricks)
+}
+
+
+
+
+
