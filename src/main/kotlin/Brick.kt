@@ -21,7 +21,7 @@ const val BORDER_THICK = 1
  * @property y Vertical brick position in bricks
  * @property type Brick's type
  */
-data class Brick(val x:Int, val y:Int, val type:Bricks, val hitCount:Int=0)
+data class Brick(val x:Int, val y:Int, val type:BricksType, val hitCount:Int=0)
 
 /**
  * Colors in hexadecimal
@@ -40,7 +40,7 @@ const val SILVER = 0xC0C0C0
  * @property hits Hits that the bricks take to disappear
  * "-1" hits means that it won't disappear if hit
  */
-enum class Bricks(val color: Int, val points:Int, val hits:Int){White(WHITE, 1,1), Orange(ORANGE, 2, 1),
+enum class BricksType(val color: Int, val points:Int, val hits:Int){White(WHITE, 1,1), Orange(ORANGE, 2, 1),
     Cyan(CYAN, 3,1), Green(GREEN, 4, 1), Red(RED, 6,1 ), Blue(BLUE, 7,1),
     Magenta(MAGENTA, 8,1), Yellow(YELLOW, 9,1), Gold(GOLD, 0,-1), Silver(SILVER, 0, 2)
 }
@@ -61,27 +61,31 @@ fun Canvas.drawBrick(b:Brick){
 }
 
 /**
- * Creates a List with all of the bricks in a collumn with coordinates limited to the ranges.
- * TODO: ACABAR O COMENTÁRIO
+ *  Creates a list with all of a brick in a column with coordinates limited to the ranges.
  *
+ *  @param xRange Horizontal range for the brick columns.
+ *  @param yRange Vertical range for the brick lines.
+ *  @param l List of types of bricks that make up a line.(one Element, makes up one line)
+ *
+ *  @return A list of bricks.
  */
-fun getBrickLines(xRange: IntRange, yRange:IntRange, l:List<Bricks>):List<Brick>{
+fun getBrickLines(xRange: IntRange, yRange:IntRange, l:List<BricksType>):List<Brick>{
     var brickList = emptyList<Brick>()
     var index = 0
     yRange.forEach {y->
         xRange.forEach {x->
             brickList = brickList +
                     when(l[index]){
-                        Bricks.White -> Brick(x, y,Bricks.White)
-                        Bricks.Gold-> Brick(x, y,Bricks.Gold)
-                        Bricks.Magenta-> Brick(x, y,Bricks.Magenta)
-                        Bricks.Red-> Brick(x, y,Bricks.Red)
-                        Bricks.Silver-> Brick(x, y,Bricks.Silver)
-                        Bricks.Blue-> Brick(x, y,Bricks.Blue)
-                        Bricks.Green  -> Brick(x, y,Bricks.Green)
-                        Bricks.Yellow -> Brick(x, y,Bricks.Yellow)
-                        Bricks.Orange -> Brick(x, y,Bricks.Orange)
-                        Bricks.Cyan -> Brick(x, y,Bricks.Cyan)
+                        BricksType.White -> Brick(x, y,BricksType.White)
+                        BricksType.Gold-> Brick(x, y,BricksType.Gold)
+                        BricksType.Magenta-> Brick(x, y,BricksType.Magenta)
+                        BricksType.Red-> Brick(x, y,BricksType.Red)
+                        BricksType.Silver-> Brick(x, y,BricksType.Silver)
+                        BricksType.Blue-> Brick(x, y,BricksType.Blue)
+                        BricksType.Green  -> Brick(x, y,BricksType.Green)
+                        BricksType.Yellow -> Brick(x, y,BricksType.Yellow)
+                        BricksType.Orange -> Brick(x, y,BricksType.Orange)
+                        BricksType.Cyan -> Brick(x, y,BricksType.Cyan)
                     }
         }
         ++index
@@ -90,45 +94,37 @@ fun getBrickLines(xRange: IntRange, yRange:IntRange, l:List<Bricks>):List<Brick>
 }
 
 /**
- *
+ * Lists of the middle column types of bricks to use in [getBrickLines] function (without the first line)
  */
-val middleBrickLine = listOf(
-    Bricks.Orange,
-    Bricks.Cyan,
-    Bricks.Green,
-    Bricks.Red,
-    Bricks.Blue,
-    Bricks.Magenta,
-    Bricks.Silver)
+val middleBrickLine = listOf<BricksType>(
+    BricksType.Orange,
+    BricksType.Cyan,
+    BricksType.Green,
+    BricksType.Red,
+    BricksType.Blue,
+    BricksType.Magenta,
+    BricksType.Silver)
 
 /**
- *
+ *Lists of the left and right columns types of bricks to use in [getBrickLines] function
  */
-val leftAndRightLines = listOf(
-    Bricks.Yellow,
-    Bricks.Magenta,
-    Bricks.Blue,
-    Bricks.Red,
-    Bricks.Green,
-    Bricks.Cyan,
-    Bricks.Orange,
-    Bricks.White)
-
-
+val leftAndRightLines = listOf<BricksType>(
+    BricksType.Yellow,
+    BricksType.Magenta,
+    BricksType.Blue,
+    BricksType.Red,
+    BricksType.Green,
+    BricksType.Cyan,
+    BricksType.Orange,
+    BricksType.White)
 
 /**
- * Ranges with Area's left brick collumn coordinates in bricks(not pixels).
- */
-val leftCollumnX:IntRange = 1..3
-val leftCollumnY:IntRange = 3..10
-
-/**
- * List that contains all the bricks from the middle collumns first line
+ * List that contains all the bricks from the middle columns first line
  */
 val middleCollumnsFirstLine = listOf<Brick>(
-    Brick(5, 3, Bricks.White), Brick(6, 3, Bricks.Gold), Brick(7, 3, Bricks.White))
+    Brick(5, 3, BricksType.White), Brick(6, 3, BricksType.Gold), Brick(7, 3, BricksType.White))
 /**
- * List that contains all the bricks from the middle collumns
+ * List that contains all the bricks from the middle columns
  */
 val middleBrickFullLines = getBrickLines(5..7, 4..10, middleBrickLine) + middleCollumnsFirstLine
 
@@ -136,7 +132,7 @@ val middleBrickFullLines = getBrickLines(5..7, 4..10, middleBrickLine) + middleC
 /**
  * Starting Bricks in the current and only level
  */
-val levelOneBricks:List<Brick> = getBrickLines(leftCollumnX,leftCollumnY, leftAndRightLines) +
+val levelOneBricks:List<Brick> = getBrickLines(1..3,3..10, leftAndRightLines) +
         getBrickLines(9..11, 3..10, leftAndRightLines) + middleBrickFullLines
 
 /**

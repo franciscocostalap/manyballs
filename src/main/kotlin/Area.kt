@@ -26,7 +26,7 @@ const val LIVES_Y = HEIGHT - 10
 /**
  * Starting Area
  */
-val startingArea = Area(WIDTH, HEIGHT, middleCollumnsFirstLine, LIVES, 0)
+val startingArea = Area(WIDTH, HEIGHT, levelOneBricks, LIVES, 0)
 
 /**
  * Draws the game's area (Lives and bricks)

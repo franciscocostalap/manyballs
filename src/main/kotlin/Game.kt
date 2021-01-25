@@ -53,16 +53,16 @@ fun Game.newBall():Game {
     }
 }
 /**
- *  Moves every ball inside Game's list of balls,
- *  and removes from it, the balls that leave
- *  the window from it's bottom border.
- *  TODO: Dar UPDATE à documentação para incluir o score e o finish
+ *  Updates the game with the elements provided by intermediate function [ballMoveAndCollide].
+ *  Elements such as Game's Score, list of balls, list of bricks.
+ *
+ *  Checks also if the game has finished. (finishes when the only bricks remaining are the [unbreakableBricks]).
  *
  *  @receiver The game.
  *
  *  @return A list of balls with the moved balls in game.
  */
-fun Game.move():Game{
+fun Game.update():Game{
     if (balls.any { it.onRacket } || over || finish ) return this
     val moveAndCollision = ballMoveAndCollide()
     val newScore = area.score + moveAndCollision.score
@@ -75,9 +75,26 @@ fun Game.move():Game{
     else  Game(newArea, moveAndCollision.ballsList, racket, over, finish, sound)
 
 }
-//TODO COMENTAR UpdateList
+
+/**
+ *  UpdateList Information.
+ *
+ *  @property ballsList List of balls.
+ *  @property bricksList List of bricks.
+ *  @property score In-game score starting at 0.
+ */
 data class UpdateList(val ballsList:List<Ball>, val bricksList: List<Brick>, val score:Int=0)
-//TODO Comentar ballMoveAndCollide
+
+/**
+ * Intermediate function that verifies if there were bricks collided, removes the collided bricks from the game
+ * and adds the respective score, based on which bricks were hit.
+ *
+ * Replaces the collided ball in [brickCollide] or [move] functions with the current ball if needed.
+ *
+ * @receiver The Game
+ *
+ * @return [UpdateList] type
+ */
 fun Game.ballMoveAndCollide() :UpdateList {
     val movedBalls = balls.map { it.move(this) }.filter {it.y in 0..(area.height + 2 * RADIUS)}
     var finalBricks = area.bricks
@@ -117,7 +134,15 @@ fun Game.moveRacket(mEvent:MouseEvent):Game{
         else                                        -> this
     }
 }
-//TODO: COMENTAR throwBall()
+
+/**
+ * Throws the ball out of the racket on mouse click when the ball is on the racket.
+ *
+ * @receiver the Game
+ *
+ * @return the Game with the thrown ball
+ *
+ */
 fun Game.throwBall():Game{
     val newRacket = Racket(racket.x, racket.width)
     val newBalls = balls.map{ball ->

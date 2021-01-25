@@ -27,13 +27,13 @@ import pt.isel.canvas.*
         }
         arena.onMouseDown {
             game = when{
-                game.balls.isEmpty() || game.balls.all { !it.onRacket }         -> game.newBall()
-                game.balls.any{it.onRacket}  -> game.throwBall()
-                else                         -> game
+                game.balls.isEmpty() || game.balls.all { !it.onRacket } -> game.newBall()
+                game.balls.any{it.onRacket}                             -> game.throwBall()
+                else                                                    -> game
             }
         }
         arena.onTimeProgress(10) {
-            game = game.move()
+            game = game.update()
             arena.drawGame(game)
         }
         arena.onKeyPressed { ke ->

@@ -102,7 +102,12 @@ fun Ball.move(g:Game) :Ball{
         else                                        -> Ball(newX, newY, dx, dy)
     }
 }
-//TODO Comentar BrickCollision data class
+/**
+ *  Brick Collision information.
+ *
+ *  @param ball Ball that collides with a brick.
+ *  @param bricks List of brick that can be hit by a ball.
+ */
 data class BrickCollision(val ball: Ball, val bricks :List<Brick>)
 
 /**
@@ -133,7 +138,16 @@ fun Int.square() = this * this
  * @property closestY: closest vertical coordinate to the ball
  */
 data class BrickCalc(val x :Int, val y :Int, val closestX :Int, val closestY :Int)
-//TODO: COMENTAR brickCollide()
+
+/**
+ *  Changes a ball direction of movement based on how it hit a brick.
+ *
+ *  @receiver [Ball] Ball that hit the bricks.
+ *
+ *  @param bricks List of bricks that were hit by a ball.
+ *
+ *  @return : BrickCollision type
+ */
 fun Ball.brickCollide(bricks: List<Brick>, sound:Boolean):BrickCollision{
     fun brickCalc(brick :Brick) :BrickCalc{
         val xBrick = brick.x * BRICK_WIDTH
